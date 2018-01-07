@@ -1,0 +1,51 @@
+@mixin typewriter($letters, $sec, $multiplier, $color) {
+  @for $i from 1 through $letters {
+    &__char-#{$i} {
+      position: relative;
+      animation: anim-#{$letters}#{$sec}#{$multiplier}-#{$i} #{$sec}s infinite;
+      will-change: opacity;
+      &:after {
+        content: '|';
+        position: absolute;
+        top: 0;
+        left: 100%;
+        padding-left: 0.1em;
+        color: $color;
+        opacity: 0;
+        animation: anim-#{$letters}#{$sec}#{$multiplier}-bar-#{$i} #{$sec}s
+          steps(round(100 / $multiplier), start) infinite;
+      }
+    }
+
+    @keyframes anim-#{$letters}#{$sec}#{$multiplier}-#{$i} {
+      0% {
+        opacity: 0;
+      }
+      #{$i * $multiplier - 1}% {
+        opacity: 0;
+      }
+      #{$i * $multiplier}%,
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes anim-#{$letters}#{$sec}#{$multiplier}-bar-#{$i} {
+      @if $i == $letters {
+        @for $j from $i through ((100 - $i) / $multiplier) {
+          #{$j * $multiplier}% {
+            opacity: if($j % 2 == 0, 1, 0);
+          }
+        }
+      } @else {
+        #{$i * $multiplier}% {
+          opacity: 1;
+        }
+        #{($i + 1) * $multiplier}%,
+        100% {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

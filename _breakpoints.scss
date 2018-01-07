@@ -1,0 +1,56 @@
+@mixin media($breakpoint) {
+  $breakpoints: defaultTo(
+    $breakpoints,
+     ('small': 600px, 'medium': 960px, 'large': 1280px)
+  );
+  $raw-query: map-get($breakpoints, $breakpoint);
+
+  @if $raw-query {
+    $query: if(
+      type-of($raw-query) == 'string',
+      unquote($raw-query),
+      inspect($raw-query)
+    );
+
+    @media (min-width: #{$query}) {
+      @content;
+    }
+  } @else {
+    @error 'No value found for `#{$breakpoint}`. ' + 'Please make sure it is defined in `$breakpoints` map.';
+  }
+}
+
+/*
+Sample for breakpoints-map:
+$breakpoints: (
+  'xsmallest': 360px,
+  'xsmaller': 400px,
+  'xsmall': 480px,
+  'small': 600px,
+  'small-large': 720px,
+  'small-xlarge': 840px,
+  'medium': 960px,
+  'medium-large': 1024px,
+  'large': 1280px,
+  'xlarge': 1600px,
+  'xlargest': 1920px
+);
+
+@function get-breakpoint($breakpoints, $bp) {
+  @return map-get($breakpoints, $bp);
+}
+
+$breakpoints: map-merge(
+  $breakpoints,
+
+  (
+    'landscape-xsmall': get-breakpoint($breakpoints, 'xsmall'),
+    'landscape-small': get-breakpoint($breakpoints, 'small'),
+    'landscape-medium': get-breakpoint($breakpoints, 'small-large'),
+    'landscape-large': get-breakpoint($breakpoints, 'medium'),
+    'landscape-xlarge': 1024px,
+    '8-columns': get-breakpoint($breakpoints, 'xsmall'),
+    '12-columns': get-breakpoint($breakpoints, 'small-large')
+  )
+);
+*/

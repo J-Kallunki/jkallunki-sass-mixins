@@ -1,0 +1,22 @@
+// Set default for map if not set
+@function defaultTo($mapVariable, $defaultMap) {
+  @if (type-of($defaultMap) == 'map') {
+    $finalParams: $mapVariable;
+    @each $key, $value in $defaultMap {
+      @if (not map-has-key($mapVariable, $key)) {
+        $finalParams: map-merge($finalParams,  ($key : $value));
+      }
+    }
+    @return $finalParams;
+  } @else {
+    @error 'The defaultTo function only works for Sass maps';
+  }
+}
+
+// Strip unit away from number
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+  @return $number;
+}

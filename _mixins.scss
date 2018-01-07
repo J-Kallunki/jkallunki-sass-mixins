@@ -1,0 +1,132 @@
+@import 'functions', 'breakpoints';
+@import 'typewriter';
+
+@mixin clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    content: '';
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+@mixin fullSize {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+@mixin absoluteFull($child, $type: "") {
+  $types-to-auto: (
+          top: bottom,
+          bottom: top,
+          left: right,
+          right: left
+  );
+  position: relative;
+  &#{$child} {
+    @include fullSize;
+    position: absolute;
+    @if map-has-key($types-to-auto, $type) {
+      #{map-get($types-to-auto, $type)} : auto;
+    }
+  }
+}
+
+@mixin specificity($element-selector) {
+  @at-root #{& + $element-selector + & + $element-selector} {
+    @content;
+  }
+}
+
+@mixin only-ie {
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    @content;
+  }
+}
+
+@mixin only-ios {
+  @supports (-webkit-overflow-scrolling: touch) {
+    @content;
+  }
+}
+
+@mixin underline-wavy($color: $primary, $shadow: $white) {
+  text-decoration: underline;
+  text-decoration: $color underline;
+  text-decoration-skip-ink: auto;
+  // browsers that support @supports, but aren’t Safari
+  @supports not (-webkit-text-decoration-skip: objects) {
+    text-decoration: $color wavy underline;
+    text-shadow: 2px 2px $shadow, 2px -2px $shadow, -2px 2px $shadow,
+      -2px -2px $shadow;
+  }
+  // Edge
+  @supports (-ms-ime-align: auto) {
+    text-decoration: underline;
+    text-decoration: $color underline;
+  }
+}
+
+@mixin basic-margins($property: 'margin', $directions...) {
+  @if length($directions) == 0 {
+    #{$property}: $basic-margin;
+    @include media('8-columns') {
+      #{$property}: $basic-margin-8-col;
+    }
+    @include media('12-columns') {
+      #{$property}: $basic-margin-12-col;
+    }
+  } @else {
+    @each $direction in $directions {
+      #{$property}-#{$direction}: $basic-margin;
+      @include media('8-columns') {
+        #{$property}-#{$direction}: $basic-margin-8-col;
+      }
+      @include media('12-columns') {
+        #{$property}-#{$direction}: $basic-margin-12-col;
+      }
+    }
+  }
+}
+
+@mixin basic-margins-negative {
+  margin-left: -$basic-margin;
+  margin-right: -$basic-margin;
+  @include media('8-columns') {
+    margin-left: -$basic-margin-8-col;
+    margin-right: -$basic-margin-8-col;
+  }
+  @include media('12-columns') {
+    margin-left: -$basic-margin-12-col;
+    margin-right: -$basic-margin-12-col;
+  }
+}
+
+@mixin wordWrap {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  hyphens: auto;
+}
+
+@mixin textOverflowEllipsis {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin allStates {
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    @content;
+  }
+}
